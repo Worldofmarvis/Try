@@ -22,6 +22,7 @@ export default function Layout() {
       : [
           { to: '/search', label: 'Find customers' },
           { to: '/seller', label: 'Seller dashboard' },
+          { to: '/seller/history', label: 'Sales history' },
           { to: '/proposals', label: 'Proposals', count: incoming },
         ]
 
@@ -39,6 +40,7 @@ export default function Layout() {
             <NavLink
               key={l.to}
               to={l.to}
+              end
               aria-label={l.count ? `${l.label}, ${l.count} waiting for your answer` : undefined}
             >
               {l.label}
