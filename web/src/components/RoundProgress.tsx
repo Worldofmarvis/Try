@@ -1,7 +1,7 @@
 type Props = { round: number; maxRounds: number }
 
 // A small "Round n of 3" with a slim bar, one segment per round (rule 2: at most 3 rounds).
-// The segment of the round in progress keeps moving, like a loading bar, until the round ends.
+// Finished rounds are navy, the round in progress is blue, the rest are grey. Nothing moves.
 export default function RoundProgress({ round, maxRounds }: Props) {
   const steps = Array.from({ length: maxRounds }, (_, i) => i + 1)
   return (

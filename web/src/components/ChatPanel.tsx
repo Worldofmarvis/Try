@@ -48,21 +48,21 @@ export default function ChatPanel({ negotiationId, counterpartName, viewerRole }
   return (
     <section aria-label="Chat" className="card chat">
       <div className="chat-head">
-        <Avatar name={counterpartName} size={40} />
+        <Avatar name={counterpartName} size={32} />
         <div className="chat-who">
           <h2>{counterpartName}</h2>
           <div className="muted small">{otherRole === 'seller' ? 'Seller' : 'Buyer'}</div>
         </div>
         <span className={`chat-online${error != null ? ' is-offline' : ''}`}>
           <span className="chat-online-dot" />
-          {error != null ? 'Reconnecting...' : 'Live'}
+          {error != null ? 'Offline' : 'Online'}
         </span>
       </div>
 
-      <div className="callout callout-info chat-rule">
-        <LockIcon size={16} color="var(--color-primary)" />
-        <span>You can discuss scope here. Chat can never change the price. Only the negotiation engine does that.</span>
-      </div>
+      <p className="chat-note">
+        <LockIcon size={12} />
+        Scope only. Chat can never change the price.
+      </p>
 
       <div className="chat-log" role="log" aria-live="polite" ref={logRef}>
         {loading && messages.length === 0 && <div className="chat-system chat-system-note">Loading messages...</div>}
@@ -102,7 +102,7 @@ export default function ChatPanel({ negotiationId, counterpartName, viewerRole }
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
         />
-        <button type="submit" className="btn btn-primary btn-lg" disabled={sending || !draft.trim()}>
+        <button type="submit" className="btn btn-primary" disabled={sending || !draft.trim()}>
           {sending ? 'Sending...' : 'Send'}
         </button>
       </form>
@@ -114,7 +114,6 @@ export default function ChatPanel({ negotiationId, counterpartName, viewerRole }
       {error != null && messages.length > 0 && !sendError && (
         <p className="muted caption chat-foot">We can't refresh the chat right now. Trying again...</p>
       )}
-      <div className="muted caption chat-foot">Messages are saved with this negotiation.</div>
     </section>
   )
 }

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { Fragment, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { errorMessage } from '../api'
 import { isFinalError } from '../api/errors'
@@ -125,21 +125,22 @@ export default function Negotiation() {
 
       <div className="neg-layout">
         <div className="neg-main">
-          <div className="neg-agents">
-            {/* Both agents are the focus of the screen, side by side: the buyer's, then the seller's. */}
-            {(['buyer', 'seller'] as const).map((role) => (
-              <OfferCard
-                key={role}
-                role={role}
-                viewerRole={viewer}
-                currentRound={n.round}
-                offer={latest(role)}
-                buyerLimits={n.buyerLimits}
-                sellerLimits={n.sellerLimits}
-              />
+          {/* Seller agent on the left, buyer agent on the right, the price range between them. */}
+          <div className={`neg-duel${limit != null ? ' has-range' : ''}`}>
+            {(['seller', 'buyer'] as const).map((role) => (
+              <Fragment key={role}>
+                {role === 'buyer' && limit != null && <PriceRange offers={n.offers} viewerRole={viewer} limit={limit} />}
+                <OfferCard
+                  role={role}
+                  viewerRole={viewer}
+                  currentRound={n.round}
+                  offer={latest(role)}
+                  buyerLimits={n.buyerLimits}
+                  sellerLimits={n.sellerLimits}
+                />
+              </Fragment>
             ))}
           </div>
-          {limit != null && <PriceRange offers={n.offers} viewerRole={viewer} limit={limit} />}
           <NegotiationLog negotiation={n} />
         </div>
         <ChatPanel negotiationId={n.id} counterpartName={n.counterpartName} viewerRole={viewer} />
