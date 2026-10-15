@@ -15,6 +15,7 @@ import './App.css'
 import './styles/screens.css'
 import './styles/states.css'
 import './styles/role.css'
+import './styles/cards.css'
 
 export default function App() {
   return (

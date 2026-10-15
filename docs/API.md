@@ -62,6 +62,7 @@ The front end and back end owners should go through "Questions to agree on". Eac
   "id": "q1",
   "title": "Blog posts for a bakery",
   "buyerName": "Sofia Alvarez",
+  "buyerAvatarUrl": "https://example.com/avatars/sofia.jpg",   // optional photo; the seller's card shows initials without it
   "category": "Writing",
   "deliverables": "3 posts of 600 words, friendly tone",
   "deadline": "2026-10-28",

@@ -33,3 +33,11 @@ export function CloseIcon({ size = 22, color = 'currentColor' }: IconProps) {
     </svg>
   )
 }
+
+export function CheckIcon({ size = 18, color = 'currentColor' }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size} stroke={color} strokeWidth={2.8}>
+      <path d="M5 12.5l4.5 4.5L19 7.5" />
+    </svg>
+  )
+}

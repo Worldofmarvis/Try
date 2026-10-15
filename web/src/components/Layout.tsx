@@ -1,4 +1,4 @@
-import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { USE_MOCK } from '../api'
 import { useIncomingProposals } from '../hooks/useIncomingProposals'
 import { homePath } from '../role/home'
@@ -10,6 +10,7 @@ const sideLabel: Record<Role, string> = { buyer: 'Buyer', seller: 'Seller' }
 export default function Layout() {
   const { me, role, setRole } = useRole()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const canSwitch = me.roles.length > 1
   const incoming = useIncomingProposals(role)
 
@@ -22,7 +23,7 @@ export default function Layout() {
           { to: '/proposals', label: 'Proposals', count: incoming },
         ]
       : [
-          { to: '/search', label: 'Find buyers' },
+          { to: '/search', label: 'Find customers' },
           { to: '/seller', label: 'Seller dashboard' },
           { to: '/proposals', label: 'Proposals', count: incoming },
         ]
@@ -34,7 +35,7 @@ export default function Layout() {
   }
 
   return (
-    <div className="shell" data-role={role}>
+    <div className="shell">
       <header className="shell-header">
         <div className="brand-group">
           <Link to="/" className="brand">
@@ -75,7 +76,10 @@ export default function Layout() {
         </div>
       </header>
       <main className="shell-main">
-        <Outlet />
+        {/* A new key on each address replays the short fade-in, so changing screens feels smooth. */}
+        <div key={pathname} className="page-enter">
+          <Outlet />
+        </div>
       </main>
     </div>
   )

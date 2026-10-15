@@ -65,19 +65,7 @@
   text-align: center;
 }
 
-/* ---------- Each side has its own colors ---------- */
-/* A buyer keeps the navy theme. A seller gets teal, so it is clear at a glance which side you are on. */
-.shell[data-role='seller'] {
-  --color-brand-header: #0b4f4c;
-  --color-brand-header-active: #0f6a66;
-  --color-primary: #0b5d59;
-  --color-primary-hover: #084744;
-  --color-accent: #0b7a75;
-  --color-accent-strong: #08615d;
-  --color-accent-soft: #e1f3f1;
-  --focus-ring: 2px solid var(--color-accent-strong);
-}
-
+/* The two sides share the PayPal palette. They are told apart by the tag in the header, the menu and the start page. */
 .brand-group { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
 
 .role-pill {
@@ -123,8 +111,6 @@
 .role-card-tagline { margin: 0; color: var(--color-text-muted); }
 .role-card ul { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: var(--space-2); flex: 1; }
 .role-card .btn { align-self: flex-start; }
-.role-card-seller .btn-primary { background: var(--color-seller); border-color: var(--color-seller); }
-.role-card-seller .btn-primary:hover:not(:disabled) { background: #08615d; border-color: #08615d; }
 .role-card.is-unavailable { opacity: 0.65; }
 
 /* The whole card is clickable, but only the button is a real control (keyboard and screen readers). */
