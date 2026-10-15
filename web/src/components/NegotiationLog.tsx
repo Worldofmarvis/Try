@@ -2,10 +2,10 @@ import Badge from './Badge'
 import { usd } from '../lib/format'
 import type { Negotiation } from '../types/marketplace'
 
-type Props = { negotiation: Negotiation }
+type Props = { negotiation: Negotiation; className?: string }
 
 // Every offer is shown with the engine's verdict (rule 1: the engine enforces limits).
-export default function NegotiationLog({ negotiation }: Props) {
+export default function NegotiationLog({ negotiation, className }: Props) {
   const { offers, round, waitingOn, viewerRole } = negotiation
   const agentName = (role: 'buyer' | 'seller') =>
     role === viewerRole ? 'Your agent' : role === 'buyer' ? 'Buyer agent' : 'Seller agent'
@@ -13,7 +13,7 @@ export default function NegotiationLog({ negotiation }: Props) {
   const tone = (r: number) => (r === round ? 'info' : 'neutral')
 
   return (
-    <section aria-label="Negotiation log" className="card">
+    <section aria-label="Negotiation log" className={`card${className ? ` ${className}` : ''}`}>
       <h2 className="card-title">Negotiation log</h2>
       <p className="muted small">Every offer is checked by the engine before it counts.</p>
 

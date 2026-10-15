@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { errorMessage } from '../api'
 import { isFinalError } from '../api/errors'
@@ -123,27 +123,38 @@ export default function Negotiation() {
 
       <RoundProgress round={n.round} maxRounds={n.maxRounds} />
 
-      <div className="neg-layout">
-        <div className="neg-main">
-          {/* Seller agent on the left, buyer agent on the right, the price range between them. */}
-          <div className={`neg-duel${limit != null ? ' has-range' : ''}`}>
-            {(['seller', 'buyer'] as const).map((role) => (
-              <Fragment key={role}>
-                {role === 'buyer' && limit != null && <PriceRange offers={n.offers} viewerRole={viewer} limit={limit} />}
-                <OfferCard
-                  role={role}
-                  viewerRole={viewer}
-                  currentRound={n.round}
-                  offer={latest(role)}
-                  buyerLimits={n.buyerLimits}
-                  sellerLimits={n.sellerLimits}
-                />
-              </Fragment>
-            ))}
-          </div>
-          <NegotiationLog negotiation={n} />
-        </div>
-        <ChatPanel negotiationId={n.id} counterpartName={n.counterpartName} viewerRole={viewer} />
+      {/* One board, laid out like the wireframe:
+          buyer agent | price range | seller agent
+          negotiation log (two columns) | chat */}
+      <div className={`neg-board${limit != null ? ' has-range' : ''}`}>
+        <OfferCard
+          role="buyer"
+          className="neg-area-buyer"
+          viewerRole={viewer}
+          currentRound={n.round}
+          offer={latest('buyer')}
+          buyerLimits={n.buyerLimits}
+          sellerLimits={n.sellerLimits}
+        />
+        {limit != null && (
+          <PriceRange className="neg-area-range" offers={n.offers} viewerRole={viewer} limit={limit} />
+        )}
+        <OfferCard
+          role="seller"
+          className="neg-area-seller"
+          viewerRole={viewer}
+          currentRound={n.round}
+          offer={latest('seller')}
+          buyerLimits={n.buyerLimits}
+          sellerLimits={n.sellerLimits}
+        />
+        <NegotiationLog className="neg-area-log" negotiation={n} />
+        <ChatPanel
+          className="neg-area-chat"
+          negotiationId={n.id}
+          counterpartName={n.counterpartName}
+          viewerRole={viewer}
+        />
       </div>
     </div>
   )

@@ -7,13 +7,13 @@ import { LockIcon } from './icons'
 
 import type { Role } from '../types/marketplace'
 
-type Props = { negotiationId: string; counterpartName: string; viewerRole: Role }
+type Props = { negotiationId: string; counterpartName: string; viewerRole: Role; className?: string }
 
 const MAX_LENGTH = 500
 
 // Chat is for scope only (rule 5). Messages go to the API as plain text and the
 // server decides whether to add a warning: this component never judges the text.
-export default function ChatPanel({ negotiationId, counterpartName, viewerRole }: Props) {
+export default function ChatPanel({ negotiationId, counterpartName, viewerRole, className }: Props) {
   const { messages, loading, error, send } = useChat(negotiationId)
   const [draft, setDraft] = useState('')
   const [sending, setSending] = useState(false)
@@ -46,7 +46,7 @@ export default function ChatPanel({ negotiationId, counterpartName, viewerRole }
   }
 
   return (
-    <section aria-label="Chat" className="card chat">
+    <section aria-label="Chat" className={`card chat${className ? ` ${className}` : ''}`}>
       <div className="chat-head">
         <Avatar name={counterpartName} size={32} />
         <div className="chat-who">

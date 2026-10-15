@@ -1,6 +1,8 @@
 /* Signed-in name in the header. Values come from tokens.css. */
 
 .role-area {
+  grid-area: user;
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -28,7 +30,7 @@
 }
 
 /* The two sides share the PayPal palette. They are told apart by the tag in the header, the menu and the start page. */
-.brand-group { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.brand-group { grid-area: brand; justify-self: start; display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
 
 .role-pill {
   padding: 2px var(--space-3);
