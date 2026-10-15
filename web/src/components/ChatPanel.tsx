@@ -1,20 +1,28 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { errorMessage } from '../api'
-import { useChat } from '../hooks/useChat'
+import type { useChat } from '../hooks/useChat'
 import { formatTime } from '../lib/format'
 import Avatar from './Avatar'
-import { LockIcon } from './icons'
+import { CloseIcon, LockIcon } from './icons'
 
 import type { Role } from '../types/marketplace'
 
-type Props = { negotiationId: string; counterpartName: string; viewerRole: Role; className?: string }
+type Props = {
+  /** The chat itself. The dock owns it so new messages are counted while the panel is closed. */
+  chat: ReturnType<typeof useChat>
+  counterpartName: string
+  viewerRole: Role
+  open: boolean
+  onClose: () => void
+  id?: string
+}
 
 const MAX_LENGTH = 500
 
 // Chat is for scope only (rule 5). Messages go to the API as plain text and the
 // server decides whether to add a warning: this component never judges the text.
-export default function ChatPanel({ negotiationId, counterpartName, viewerRole, className }: Props) {
-  const { messages, loading, error, send } = useChat(negotiationId)
+export default function ChatPanel({ chat, counterpartName, viewerRole, open, onClose, id }: Props) {
+  const { messages, loading, error, send } = chat
   const [draft, setDraft] = useState('')
   const [sending, setSending] = useState(false)
   const [sendError, setSendError] = useState<string | null>(null)
@@ -22,11 +30,18 @@ export default function ChatPanel({ negotiationId, counterpartName, viewerRole, 
   const firstName = counterpartName.split(' ')[0]
   const otherRole = viewerRole === 'buyer' ? 'seller' : 'buyer'
 
-  // Keep the newest message in view.
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  // Keep the newest message in view, also right after the panel opens.
   useEffect(() => {
     const log = logRef.current
-    if (log) log.scrollTop = log.scrollHeight
-  }, [messages.length])
+    if (log && open) log.scrollTop = log.scrollHeight
+  }, [messages.length, open])
+
+  // Opening the chat puts the cursor in the message box.
+  useEffect(() => {
+    if (open) inputRef.current?.focus()
+  }, [open])
 
   async function submit(e: FormEvent) {
     e.preventDefault()
@@ -46,7 +61,15 @@ export default function ChatPanel({ negotiationId, counterpartName, viewerRole, 
   }
 
   return (
-    <section aria-label="Chat" className={`card chat${className ? ` ${className}` : ''}`}>
+    <section
+      id={id}
+      aria-label="Chat"
+      className="card chat"
+      hidden={!open}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onClose()
+      }}
+    >
       <div className="chat-head">
         <Avatar name={counterpartName} size={32} />
         <div className="chat-who">
@@ -57,6 +80,9 @@ export default function ChatPanel({ negotiationId, counterpartName, viewerRole, 
           <span className="chat-online-dot" />
           {error != null ? 'Offline' : 'Online'}
         </span>
+        <button type="button" className="chat-close" aria-label="Close chat" onClick={onClose}>
+          <CloseIcon size={16} />
+        </button>
       </div>
 
       <p className="chat-note">
@@ -95,6 +121,7 @@ export default function ChatPanel({ negotiationId, counterpartName, viewerRole, 
         </label>
         <input
           id="chat-msg"
+          ref={inputRef}
           className="input chat-input"
           type="text"
           placeholder="Message about scope..."

@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { errorMessage } from '../api'
 import { isFinalError } from '../api/errors'
 import Badge from '../components/Badge'
-import ChatPanel from '../components/ChatPanel'
+import ChatDock from '../components/ChatDock'
 import NegotiationLog from '../components/NegotiationLog'
 import OfferCard from '../components/OfferCard'
 import PriceRange from '../components/PriceRange'
@@ -96,7 +96,7 @@ export default function Negotiation() {
   const limit = viewer === 'buyer' ? n.buyerLimits?.max : n.sellerLimits?.floor
 
   return (
-    <div className="page-stack page-wide">
+    <div className="page-stack page-wide neg-page">
       <div className="neg-head">
         <div>
           <h1>{n.service}</h1>
@@ -125,7 +125,7 @@ export default function Negotiation() {
 
       {/* One board, laid out like the wireframe:
           buyer agent | price range | seller agent
-          negotiation log (two columns) | chat */}
+          negotiation log across the full width. The chat opens from the button at the bottom right. */}
       <div className={`neg-board${limit != null ? ' has-range' : ''}`}>
         <OfferCard
           role="buyer"
@@ -149,13 +149,9 @@ export default function Negotiation() {
           sellerLimits={n.sellerLimits}
         />
         <NegotiationLog className="neg-area-log" negotiation={n} />
-        <ChatPanel
-          className="neg-area-chat"
-          negotiationId={n.id}
-          counterpartName={n.counterpartName}
-          viewerRole={viewer}
-        />
       </div>
+
+      <ChatDock negotiationId={n.id} counterpartName={n.counterpartName} viewerRole={viewer} />
     </div>
   )
 }
