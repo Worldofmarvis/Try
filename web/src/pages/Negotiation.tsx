@@ -4,7 +4,7 @@ import { errorMessage } from '../api'
 import { isFinalError } from '../api/errors'
 import Badge from '../components/Badge'
 import ChatDock from '../components/ChatDock'
-import NegotiationLog from '../components/NegotiationLog'
+import OfferHistory from '../components/OfferHistory'
 import OfferCard from '../components/OfferCard'
 import PriceRange from '../components/PriceRange'
 import RoundProgress from '../components/RoundProgress'
@@ -125,7 +125,7 @@ export default function Negotiation() {
 
       {/* One board, laid out like the wireframe:
           buyer agent | price range | seller agent
-          negotiation log across the full width. The chat opens from the button at the bottom right. */}
+          offer history (AG Studio table or timeline) across the full width. The chat opens from the button at the bottom right. */}
       <div className={`neg-board${limit != null ? ' has-range' : ''}`}>
         <OfferCard
           role="buyer"
@@ -148,7 +148,7 @@ export default function Negotiation() {
           buyerLimits={n.buyerLimits}
           sellerLimits={n.sellerLimits}
         />
-        <NegotiationLog className="neg-area-log" negotiation={n} />
+        <OfferHistory className="neg-area-log" negotiation={n} />
       </div>
 
       <ChatDock negotiationId={n.id} counterpartName={n.counterpartName} viewerRole={viewer} />

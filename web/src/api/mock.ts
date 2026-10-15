@@ -30,8 +30,9 @@ import {
   initialSellerListings,
   sellerActiveNegotiation,
   sellerNegotiations,
+  sellerSales,
 } from '../data/dashboardMock'
-import type { BuyerRequest, SellerListing } from '../types/dashboard'
+import type { BuyerRequest, SaleOutcome, SellerListing, SellerSale } from '../types/dashboard'
 import type { ChatMessage, DealApproval, Decision, Listing, Payment, SearchQuery } from '../types/marketplace'
 import type { Role } from '../types/me'
 import type { OpenRequest, Proposal, RequestQuery } from '../types/proposal'
@@ -573,6 +574,33 @@ export const mockApi: Api = {
     return sellerNegotiations.map((r) =>
       r.id === DEMO_AGREED_ID ? { ...r, deal: approvalStatus(approval.buyer, approval.seller) } : { ...r },
     )
+  },
+
+  async listSellerSales() {
+    await delay()
+    // The settled demo deal follows the shared approval and payment state, so paying on the Payment
+    // screen turns it into a sale here. Everything else is earlier history.
+    const approved = approvalStatus(approval.buyer, approval.seller)
+    const outcome: SaleOutcome =
+      payment.status === 'paid'
+        ? 'paid'
+        : approved === 'approved'
+          ? 'awaiting_payment'
+          : approved === 'declined'
+            ? 'declined'
+            : 'awaiting_approval'
+    const live: SellerSale = {
+      id: DEMO_AGREED_ID,
+      date: payment.paidAt ?? new Date().toISOString(),
+      service: '5-page business website',
+      buyerName: 'Ben Carter',
+      listPrice: 500,
+      priceFloor: 320,
+      agreedPrice: 380,
+      rounds: 3,
+      outcome,
+    }
+    return [live, ...sellerSales]
   },
 
   async getSellerActiveNegotiation() {
