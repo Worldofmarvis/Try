@@ -29,7 +29,7 @@ export default function App() {
             <Route path="seller" element={<RequireRole role="seller"><SellerDashboard /></RequireRole>} />
             <Route path="proposals" element={<Proposals />} />
             <Route path="negotiations/:id" element={<Negotiation />} />
-            <Route path="negotiations/:id/pay" element={<RequireRole role="buyer"><Payment /></RequireRole>} />
+            <Route path="negotiations/:id/pay" element={<Payment />} />
             <Route path="negotiations/:id/no-agreement" element={<RequireRole role="buyer"><NoAgreement /></RequireRole>} />
             <Route path="*" element={<NotFound />} />
           </Route>

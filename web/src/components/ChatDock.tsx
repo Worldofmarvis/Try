@@ -6,28 +6,51 @@ import { ChatIcon, CloseIcon } from './icons'
 
 type Props = { negotiationId: string; counterpartName: string; viewerRole: Role }
 
+// How many messages the person has already read, kept for this tab so a reload does not forget it.
+const readKey = (id: string, role: Role) => `chat-read:${id}:${role}`
+
+function loadRead(key: string): number {
+  try {
+    const n = Number(sessionStorage.getItem(key))
+    return Number.isInteger(n) && n > 0 ? n : 0
+  } catch {
+    return 0
+  }
+}
+
+function saveRead(key: string, count: number) {
+  try {
+    sessionStorage.setItem(key, String(count))
+  } catch {
+    // Private mode or storage full: the count just starts again next time.
+  }
+}
+
 /**
  * The chat lives in the bottom-right corner, like a messenger: a round button that opens the panel.
- * It stays mounted while closed, so new messages keep arriving and are counted on the button.
+ * It stays mounted while closed, so messages keep arriving. Anything the other person wrote that has
+ * not been read yet is shown on the button (a count) and in a small preview above it.
  */
 export default function ChatDock({ negotiationId, counterpartName, viewerRole }: Props) {
   const chat = useChat(negotiationId)
+  const key = readKey(negotiationId, viewerRole)
   const [open, setOpen] = useState(false)
-  // How many messages were already there when the person last looked. null until the first load finishes.
-  const [seen, setSeen] = useState<number | null>(null)
+  const [read, setRead] = useState(() => loadRead(key))
   const launcher = useRef<HTMLButtonElement>(null)
   const panelId = useId()
-  const { messages, loading } = chat
+  const { messages } = chat
 
+  // While the chat is open, everything in it counts as read.
   useEffect(() => {
-    if (seen === null && !loading) setSeen(messages.length)
-    if (open && seen !== null && seen !== messages.length) setSeen(messages.length)
-  }, [seen, loading, open, messages.length])
+    if (!open) return
+    setRead(messages.length)
+    saveRead(key, messages.length)
+  }, [open, messages.length, key])
 
-  const unread =
-    open || seen === null
-      ? 0
-      : messages.slice(seen).filter((m) => m.from !== 'system' && m.from !== viewerRole).length
+  const unread = open
+    ? []
+    : messages.slice(read).filter((m) => m.from !== 'system' && m.from !== viewerRole)
+  const latest = unread[unread.length - 1]
 
   function close() {
     setOpen(false)
@@ -35,6 +58,7 @@ export default function ChatDock({ negotiationId, counterpartName, viewerRole }:
   }
 
   const firstName = counterpartName.split(' ')[0]
+  const count = unread.length
 
   return (
     <div className="chat-dock">
@@ -46,6 +70,15 @@ export default function ChatDock({ negotiationId, counterpartName, viewerRole }:
         open={open}
         onClose={close}
       />
+      {latest && latest.from !== 'system' && (
+        <button type="button" className="chat-preview" onClick={() => setOpen(true)} role="status">
+          <span className="chat-preview-who">
+            {firstName}
+            {count > 1 ? ` (${count} new messages)` : ' sent a message'}
+          </span>
+          <span className="chat-preview-text">{latest.text}</span>
+        </button>
+      )}
       <button
         ref={launcher}
         type="button"
@@ -53,15 +86,15 @@ export default function ChatDock({ negotiationId, counterpartName, viewerRole }:
         aria-expanded={open}
         aria-controls={panelId}
         aria-label={
-          open ? 'Close chat' : unread > 0 ? `Open chat with ${firstName}, ${unread} new` : `Open chat with ${firstName}`
+          open ? 'Close chat' : count > 0 ? `Open chat with ${firstName}, ${count} new` : `Open chat with ${firstName}`
         }
         onClick={() => (open ? close() : setOpen(true))}
       >
         {open ? <CloseIcon size={20} /> : <ChatIcon size={22} />}
         <span className="chat-launcher-label">{open ? 'Close' : 'Chat'}</span>
-        {unread > 0 && (
+        {count > 0 && (
           <span className="chat-badge" aria-hidden="true">
-            {unread > 9 ? '9+' : unread}
+            {count > 9 ? '9+' : count}
           </span>
         )}
       </button>
