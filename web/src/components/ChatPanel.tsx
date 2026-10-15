@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { errorMessage } from '../api'
 import { useChat } from '../hooks/useChat'
 import { formatTime } from '../lib/format'
+import Avatar from './Avatar'
 import { LockIcon } from './icons'
 
 import type { Role } from '../types/marketplace'
@@ -47,10 +48,14 @@ export default function ChatPanel({ negotiationId, counterpartName, viewerRole }
   return (
     <section aria-label="Chat" className="card chat">
       <div className="chat-head">
-        <h2>Chat with {firstName}</h2>
-        <span className="chat-online">
+        <Avatar name={counterpartName} size={40} />
+        <div className="chat-who">
+          <h2>{counterpartName}</h2>
+          <div className="muted small">{otherRole === 'seller' ? 'Seller' : 'Buyer'}</div>
+        </div>
+        <span className={`chat-online${error != null ? ' is-offline' : ''}`}>
           <span className="chat-online-dot" />
-          Online
+          {error != null ? 'Reconnecting...' : 'Live'}
         </span>
       </div>
 

@@ -1,4 +1,4 @@
-/* "Viewing as" switch and signed-in name in the header. Values come from tokens.css. */
+/* Signed-in name in the header. Values come from tokens.css. */
 
 .role-area {
   display: flex;
@@ -7,47 +7,9 @@
   flex-wrap: wrap;
 }
 
-.role-switch {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-1);
-  border-radius: var(--radius-pill);
-  background: var(--color-brand-header-active);
-}
-
-.role-switch-label {
-  padding: 0 var(--space-2);
-  font-size: var(--text-sm);
-  color: var(--color-primary-contrast);
-}
-
-.role-switch button {
-  min-height: 32px;
-  padding: 0 var(--space-3);
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--color-primary-contrast);
-  font: inherit;
-  font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
-  cursor: pointer;
-}
-
-.role-switch button[aria-pressed='true'] {
-  background: var(--color-surface);
-  color: var(--color-text);
-  font-weight: var(--weight-semibold);
-}
-
 .role-name {
   font-size: var(--text-sm);
   color: var(--color-primary-contrast);
-}
-
-@media (max-width: 640px) {
-  .role-switch button { min-height: 44px; }
 }
 
 /* The number on the Proposals link: proposals waiting for this side's answer. */

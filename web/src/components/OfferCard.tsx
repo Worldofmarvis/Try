@@ -18,7 +18,7 @@ export default function OfferCard({ role, viewerRole, currentRound, offer, buyer
   const mine = role === viewerRole
   const title = mine ? 'Your agent' : role === 'buyer' ? 'Buyer agent' : 'Seller agent'
   return (
-    <section aria-label={title} className="card offer-card">
+    <section aria-label={title} className={`card offer-card offer-card-${role}`}>
       <div className="offer-card-head">
         <span className={`marker ${role === 'buyer' ? 'marker-buyer' : 'marker-seller'}`} />
         <h2>{title}</h2>

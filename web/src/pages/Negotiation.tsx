@@ -126,6 +126,7 @@ export default function Negotiation() {
       <div className="neg-layout">
         <div className="neg-main">
           <div className="neg-agents">
+            {/* Both agents are the focus of the screen, side by side: the buyer's, then the seller's. */}
             {(['buyer', 'seller'] as const).map((role) => (
               <OfferCard
                 key={role}

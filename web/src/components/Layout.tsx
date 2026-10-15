@@ -1,20 +1,17 @@
-import { NavLink, Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
-import { USE_MOCK } from '../api'
+import { NavLink, Outlet, Link, useLocation } from 'react-router-dom'
 import { useIncomingProposals } from '../hooks/useIncomingProposals'
-import { homePath } from '../role/home'
 import { useRole } from '../role/useRole'
 import type { Role } from '../types/me'
 
 const sideLabel: Record<Role, string> = { buyer: 'Buyer', seller: 'Seller' }
 
 export default function Layout() {
-  const { me, role, setRole } = useRole()
-  const navigate = useNavigate()
+  const { me, role } = useRole()
   const { pathname } = useLocation()
-  const canSwitch = me.roles.length > 1
   const incoming = useIncomingProposals(role)
 
-  // Each side has its own menu: a buyer finds services, a seller finds buyers.
+  // Each side has its own menu: a buyer finds services, a seller finds customers.
+  // The side was chosen on the first screen and stays the same for this tab.
   const links: { to: string; label: string; count?: number }[] =
     role === 'buyer'
       ? [
@@ -27,12 +24,6 @@ export default function Layout() {
           { to: '/seller', label: 'Seller dashboard' },
           { to: '/proposals', label: 'Proposals', count: incoming },
         ]
-
-  function switchTo(next: Role) {
-    if (next === role) return
-    setRole(next)
-    navigate(homePath(next))
-  }
 
   return (
     <div className="shell">
@@ -60,18 +51,6 @@ export default function Layout() {
           ))}
         </nav>
         <div className="role-area">
-          {canSwitch ? (
-            <div className="role-switch" role="group" aria-label={USE_MOCK ? 'Demo: view as' : 'Viewing as'}>
-              <span className="role-switch-label">{USE_MOCK ? 'Demo: view as' : 'Viewing as'}</span>
-              {me.roles.map((r) => (
-                <button key={r} type="button" aria-pressed={r === role} onClick={() => switchTo(r)}>
-                  {sideLabel[r]}
-                </button>
-              ))}
-            </div>
-          ) : (
-            <span className="role-switch-label">{sideLabel[role]}</span>
-          )}
           <span className="role-name">{me.name}</span>
         </div>
       </header>

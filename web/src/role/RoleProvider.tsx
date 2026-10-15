@@ -90,5 +90,5 @@ export default function RoleProvider({ children }: { children: ReactNode }) {
   // as they appear, so this is set during render (it is only a variable, so repeating it is harmless).
   setDemoRole(role)
 
-  return <RoleContext.Provider value={{ me, role, setRole }}>{children}</RoleContext.Provider>
+  return <RoleContext.Provider value={{ me, role }}>{children}</RoleContext.Provider>
 }
